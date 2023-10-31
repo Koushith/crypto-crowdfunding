@@ -18,6 +18,7 @@ contract CrowdFunding {
 
     // we need mapping because in solidity we cannot use  Campaign[0] -> this is not possible. we need to create a map first
     // struct only defines the structure of the object. but we need to create a map to store the data.
+    // creating an array of objects- object that follows a structure of Campaign
     mapping(uint256 => Campaign) public Campaigns;
 
     // this is part of contract state. stored on blockchain
