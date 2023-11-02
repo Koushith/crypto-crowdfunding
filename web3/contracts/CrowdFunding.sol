@@ -99,6 +99,9 @@ contract CrowdFunding {
         return (Campaigns[_id].donators, Campaigns[_id].donations);
     }
 
+    /**
+     * This function returns all the campaigns
+     */
     function getCampaigns() public view returns (Campaign[] memory) {
         // creating an empty array of type Campaign
         Campaign[] memory allCampaigns = new Campaign[](numberOfCampaigns); // [{}, {}, {}]
