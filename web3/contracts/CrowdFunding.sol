@@ -45,8 +45,9 @@ contract CrowdFunding {
         uint256 _deadline,
         string memory _image
     ) public returns (uint256) {
-        // we are grabbing reference to a specific campaign in the Campaigns array. after creating the new
-        // campaign this number is incremented by 1
+        // we are creating the new campaign. grabbing reference to a specific campaign in the Campaigns array. after creating the new
+        // campaign this number is incremented by 1.
+        // struct will act as a datatype. infact it is a composable datatype. so we are using Campaign as a datatype here.
         Campaign storage campaign = Campaigns[numberOfCampaigns];
         // require is like if statement.
         // block.timestamp is the current time
@@ -67,9 +68,45 @@ contract CrowdFunding {
         return numberOfCampaigns - 1;
     }
 
-    function donateToCampaingn() {}
+    // this function is used to create a donation. it accepts the campaign id
+    // payable keyword denotes that it can accept ether
+    function donateToCampaingn(uint256 _id) public payable {
+        // value we will be sending from frontend.
+        uint256 amount = msg.value;
 
-    function getDonators() {}
+        // grabbing the specific campaign which we want to donate to
+        Campaign storage campaign = Campaigns[_id];
 
-    function getCampaigns() {}
+        // pushing the address to donators array
+        campaign.donators.push(msg.sender);
+
+        // pushing the amount to donations array
+        campaign.donations.push(amount);
+
+        // this will transfer the ethers to the campaign owner. , is a placholder. this returns a bool value
+        (bool sent, ) = payable(campaign.owner).call{value: amount}("");
+
+        if (sent) {
+            campaign.amountCollected += amount;
+        }
+    }
+
+    // tihs funcrion takes in capaign id and returns the donators and donations. second one is- string array
+    function getDonators(
+        uint256 _id
+    ) public view returns (address[] memory, uint256[] memory) {
+        // Campaign storage campaign = Campaigns[_id];
+        return (Campaigns[_id].donators, Campaigns[_id].donations);
+    }
+
+    function getCampaigns() public view returns (Campaign[] memory) {
+        // creating an empty array of type Campaign
+        Campaign[] memory allCampaigns = new Campaign[](numberOfCampaigns); // [{}, {}, {}]
+
+        for (uint256 i = 0; i < numberOfCampaigns; i++) {
+            Campaign storage item = Campaigns[i];
+            allCampaigns[i] = item; // just polpulatong the array
+        }
+        return allCampaigns;
+    }
 }
