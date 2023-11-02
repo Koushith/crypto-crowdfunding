@@ -4,7 +4,7 @@ import "./styles/Home.css";
 export default function Home() {
   return (
     <main className="main">
-      <div className="container">
+      {/* <div className="container">
         <div className="header">
           <h1 className="title">
             Welcome to{" "}
@@ -93,7 +93,7 @@ export default function Home() {
             </div>
           </a>
         </div>
-      </div>
+      </div> */}
     </main>
   );
 }
