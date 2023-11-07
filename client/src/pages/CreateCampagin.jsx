@@ -1,12 +1,19 @@
 import { useNavigate } from 'react-router-dom'
 import { useState } from 'react'
 import { FormField } from '../components/FormField';
-import {CustomButton} from '../components/CustomButton'
-import {Loader} from '../components/Loader'
+import { CustomButton } from '../components/CustomButton'
+import { Loader } from '../components/Loader'
 import { money } from '../assets';
+import { useStateContext } from '../context';
+import {checkIfImage} from '../utils/index'
+import { ethers } from 'ethers';
 
 export const CreateCampaign = () => {
     const navigate = useNavigate();
+    const { createCampaign } = useStateContext()
+
+
+
     const [isLoading, setIsLoading] = useState(false);
     // const { createCampaign } = useStateContext();
     const [form, setForm] = useState({
@@ -18,13 +25,24 @@ export const CreateCampaign = () => {
         image: ''
     });
 
-    const handleFormFieldChange =(name,e)=>{
-        setForm({...form, [name]:e.target.value})
+    const handleFormFieldChange = (name, e) => {
+        setForm({ ...form, [name]: e.target.value })
     }
 
-    const handleSubmit =(e)=>{
-e.preventDefault()
-console.log(form)
+    const handleSubmit = (e) => {
+        e.preventDefault()
+        // console.log(form)
+        checkIfImage(form.image, async (exists) => {
+            if (exists) {
+                setIsLoading(true)
+                await createCampaign({ ...form, target: ethers.utils.parseUnits(form.target, 18) })
+                setIsLoading(false);
+                navigate('/');
+            } else {
+                alert('Provide valid image URL')
+                setForm({ ...form, image: '' });
+            }
+        })
     }
     return (
         <div className='className="bg-[#1c1c24] flex justify-center items-center flex-col rounded-[10px] sm:p-10 p-4'>
